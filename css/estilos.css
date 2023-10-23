@@ -1,0 +1,129 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+.imagen{
+    max-width:100%;
+}
+
+a{
+    cursor:pointer;
+}
+.alerta{
+    font-weight:700;
+}
+body{
+    background-color: white;
+    overflow-x: hidden;
+}
+.modal-contenedor{
+    display:flex;
+    align-items: center;
+    gap:2rem;
+}
+.img-carrito{
+    width:200px;
+    padding:20px;
+} 
+.modal-content{
+    background-color: white;
+}
+.parrafo{
+    font-weight: 900;
+    font-style: italic;
+}
+#precioTotal{
+    margin:0;
+    padding:0;
+}
+a{
+    text-decoration: none;
+}
+.boton{
+    opacity:0;
+}
+#contenedor{
+    padding-left: 140px;
+    padding-right: 140px;
+    margin-bottom: 50px;
+}
+.navbar-nav {
+    position: inherit;
+    left: 55%;
+    transform: translatex(-50%);
+}
+.galery{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #333333;
+    color: blanchedalmond;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#galeria1{
+    padding-left: 120px;
+}
+
+#boton-id{
+    margin-left: 10px;
+    margin-top: 50px;
+}
+#user-id{
+    margin-top: 5px;
+}
+.btn {
+    background-color: #1A1E21;
+}
+
+.container{
+    padding: 2%;
+    text-align: center;
+}
+#custom-search-input {
+    margin:0;
+    margin-top: 10px;
+    padding: 0;
+}
+ 
+#custom-search-input .search-query {
+    width:100%;
+    padding-right: 3px;
+    padding-left: 15px;
+    margin-bottom: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 0;
+}
+ 
+#custom-search-input button {
+    border: 0;
+    background-color: #1A1E21;
+
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-top: -68px;
+    margin-left: 1260px;
+    margin-bottom: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    color:white;
+
+    z-index: 2;
+}
+ 
+.search-query:focus{
+    z-index: 0;   
+}
+
+#contenedorProducto {
+    text-align: center;
+    padding-bottom: 40px;
+}
+
+#mayor {
+    margin-top: 20px;
+    margin-left: 140px;
+}
+
+#menor {
+    margin-top: 20px;
+}

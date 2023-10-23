@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+    />
+
+    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Ecommerce</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg bg-dark min-vw-100">
+        <h2 class="p-3 text-white">Tiendita Ecommerce</h2>
+        <ul class="navbar-nav" id="navMenu">           	
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="tienda.html">Tienda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="producto.html">Ver productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="ordenes.html">Balance</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              data-bs-toggle="modal"
+              data-bs-target="#modal"
+            >
+              <i class="bi bi-cart mx-5" id="carritoContenedor">0</i>
+            </a>
+          </li>   
+          <div>
+            <input class="form " id="user-id" placeholder="Ingrese su ID..." type="number">
+        </div>  
+        <div>
+            <button Class="btn btn-secondary my-1 my-sm-0" id="boton-id" type="btn">Ingresar</button> 
+        </div>      
+        </ul>  
+         
+      </nav>
+    </header>
+
+    <section class="header">
+      <img src="img/header.png" width="100%" height="100%">
+    </section>
+
+    <!-- CATEGORIAS -->
+    <section class="galery">
+      <h2>CATEGORIAS</h2>
+      </section>
+    <section class="container py-5">
+      <div class="row">
+          <div class="col-12 col-md-4 p-5 mt-3">
+              <a href="tienda.html"><img src="img/categoria_01.png" class="rounded-circle img-fluid border"></a>
+              <h5 class="text-center mt-3 mb-3">Remeras</h5>
+              <p class="text-center"><a a href="tienda.html" class="btn btn-secondary">Comprar</a></p>
+          </div>
+          <div class="col-12 col-md-4 p-5 mt-3">
+              <a href="tienda.html"><img src="img/categoria_02.png" class="rounded-circle img-fluid border"></a>
+              <h2 class="h5 text-center mt-3 mb-3">Buzos</h2>
+              <p class="text-center"><a a href="tienda.html" class="btn btn-secondary">Comprar</a></p>
+          </div>
+          <div class="col-12 col-md-4 p-5 mt-3">
+              <a href="tienda.html"><img src="img/categoia_03.png" class="rounded-circle img-fluid border"></a>
+              <h2 class="h5 text-center mt-3 mb-3">Zapatillas</h2>
+              <p class="text-center"><a a href="tienda.html" class="btn btn-secondary">Comprar</a></p>
+          </div>
+      </div>
+  </section>
+  <!-- FIN CATEGORIAS -->
+
+  <!-- LO MAS VENDIDO -->
+  <section class="bg-light">
+    <section class="galery">
+      <h2>LO MAS VENDIDO</h2>
+      </section>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="tienda.html">
+                        <img id="img6" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                        <script src="javascript/galeria.js"></script>
+                    </a>
+                    <div class="card-body">
+                        <p id="nombre6" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p> 
+                        <p id="marca6" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>                                 
+                        <p id="precio6" class="text-center mb-0">$
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                        <p id="descripcion6" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                    </div>
+                    <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="tienda.html">
+                        <img id="img4" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                        <script src="javascript/galeria.js"></script>
+                    </a>
+                    <div class="card-body">
+                        <p id="nombre4" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p> 
+                        <p id="marca4" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>                                 
+                        <p id="precio4" class="text-center mb-0">$
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                        <p id="descripcion4" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                    </div>
+                    <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="tienda.html">
+                        <img id="img2" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                            <script src="javascript/galeria.js"></script>
+                    </a>
+                    <div class="card-body">
+                        <p id="nombre2" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p> 
+                        <p id="marca2" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>                                 
+                        <p id="precio2" class="text-center mb-0">$
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                        <p id="descripcion2" class="text-center mb-0">
+                            <script p="javascript/galeria.js"></script>
+                        </p>
+                    </div>
+                    <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+<!-- FIN LO MAS VENDIDO -->
+
+<!-- LO NUEVO -->
+<section class="bg-light">
+  <section class="galery">
+    <h2>LO NUEVO</h2>
+    </section>
+  <div class="container py-5">
+      <div class="row">
+          <div class="col-12 col-md-4 mb-4">
+              <div class="card h-100">
+                  <a href="tienda.html">
+                      <img id="img3" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                      <script src="javascript/galeria.js"></script>
+                  </a>
+                  <div class="card-body">
+                      <p id="nombre3" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p> 
+                      <p id="marca3" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>                                 
+                      <p id="precio3" class="text-center mb-0">$
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                      <p id="descripcion3" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                  </div>
+                  <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+              </div>
+          </div>
+          <div class="col-12 col-md-4 mb-4">
+              <div class="card h-100">
+                  <a href="tienda.html">
+                      <img id="img1" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                      <script src="javascript/galeria.js"></script>
+                  </a>
+                  <div class="card-body">
+                      <p id="nombre1" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p> 
+                      <p id="marca1" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>                                 
+                      <p id="precio1" class="text-center mb-0">$
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                      <p id="descripcion1" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                  </div>
+                  <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+              </div>
+          </div>
+          <div class="col-12 col-md-4 mb-4">
+              <div class="card h-100">
+                  <a href="tienda.html">
+                      <img id="img5" alt="Remera Rip Curl Crecent" width="390px" height="450px">
+                          <script src="javascript/galeria.js"></script>
+                  </a>
+                  <div class="card-body">
+                      <p id="nombre5" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p> 
+                      <p id="marca5" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>                                 
+                      <p id="precio5" class="text-center mb-0">$
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                      <p id="descripcion5" class="text-center mb-0">
+                          <script p="javascript/galeria.js"></script>
+                      </p>
+                  </div>
+                  <p class="text-center"><a a href="tienda.html" class="btn btn-secondary text-white mt-2">Comprar</a></p>
+              </div>
+          </div>
+      </div>
+      <p class="text-center"><a a href="tienda.html" class="btn btn-secondary">Ir a la tienda</a></p>
+  </div>
+</section>
+<!-- FIN LO NUEVO -->
+
+    <footer class="bg-dark text-center text-white"> 
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2022 Copyright:
+        <a class="text-white" href="https://mdbootstrap.com/">Claudio D'Amico</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    
+
+    <script src="javascript/main.js"></script>
+    <script src="javascript/galeria.js"></script>
+    <script src="javascript/login.js"></script>
+    <script src="javascript/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>

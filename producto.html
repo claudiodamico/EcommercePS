@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+    />
+
+    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Ecommerce</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg bg-dark min-vw-100">
+        <h2 class="p-3 text-white">Tiendita Ecommerce</h2>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="tienda.html">Tienda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="producto.html">Ver productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="ordenes.html">Balance</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              data-bs-toggle="modal"
+              data-bs-target="#modal"
+            >
+              <i class="bi bi-cart mx-5" id="carritoContenedor">0</i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="row">
+          <div class="col-12"><h2>Buscar producto</h2></div>
+          <div class="col-12">
+              <div id="custom-search-input">
+                    <div class="input-group">
+                        <input type="search" id="search-input" class="form-control" placeholder="Buscar..." />                        
+                    </div>
+                    <span class="input-group-btn">
+                      <button type="button" id="search-button" class="btn btn-primary">
+                          <span class="fa fa-search"></span>
+                      </button>
+                  </span>
+                </div>
+            </div>
+      </div>
+    </div>
+
+    <main>
+      <div class="contenedor-Producto" id="contenedorProducto">
+        
+      </div>
+    </main>   
+    
+    <footer class="bg-dark text-center text-white"> 
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2022 Copyright:
+        <a class="text-white" href="https://mdbootstrap.com/">Claudio D'Amico</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+    <script src="javascript/main.js"></script>
+    <script src="javascript/producto.js"></script>
+    <script src="javascript/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
