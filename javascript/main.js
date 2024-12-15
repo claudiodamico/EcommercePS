@@ -1,315 +1,258 @@
 const API_URL_Productos = 'https://localhost:7082/api/productos';
-const API_URL_ProductosMayor = 'https://localhost:7082/api/productos?precio=true';
-const API_URL_ProductosMenor = 'https://localhost:7082/api/productos?precio=false';
+const API_URL_ProductosMayor = 'https://localhost:7082/api/productos/filtrar-por-precio?mayor=true';
+const API_URL_ProductosMenor = 'https://localhost:7082/api/productos/filtrar-por-precio?mayor=false';
 const API_URL_Carrito = 'https://localhost:7082/api/carrito';
+const API_URL_RegistrarVenta = 'https://localhost:7082/api/orden/registrar-venta';
 
 let carrito = [];
+const clienteId = 1; // Cliente fijo con ID 1
 
 const contenedor = document.querySelector("#contenedor");
 const carritoContenedor = document.querySelector("#carritoContenedor");
 const vaciarCarrito = document.querySelector("#vaciarCarrito");
 const precioTotal = document.querySelector("#precioTotal");
-const activarFuncion = document.querySelector("#activarFuncion");
 const procesarCompra = document.querySelector("#procesarCompra");
 const totalProceso = document.querySelector("#totalProceso");
-const formulario = document.querySelector('#procesar-pago')
-const userId = localStorage.getItem('UserId');
+const formulario = document.querySelector('#procesar-pago');
 
-if (activarFuncion) {
-  activarFuncion.addEventListener("click", procesarPedido);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  mostrarCarrito();
-  document.querySelector("#activarFuncion").click(procesarPedido);
+document.addEventListener("DOMContentLoaded", async () => {
+  await reloadMenor(); // Cargar productos por precio menor inicialmente
+  await cargarCarrito(); // Cargar productos del carrito
 });
-if(formulario){
-  formulario.addEventListener('submit', enviarCompra)
+
+// Cargar carrito desde backend
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch(`${API_URL_Carrito}?ClienteId=${clienteId}`);
+    if (res.ok) {
+      const data = await res.json();
+      carrito = data.carritoProductos.map(cp => ({
+        productoId: cp.productoId,
+        nombre: cp.producto.nombre,
+        precio: cp.producto.precio,
+        cantidad: cp.cantidad,
+        imagen: cp.producto.imagen,
+      }));
+      mostrarCarrito();
+    }
+  } catch (error) {
+    console.error("Error al cargar el carrito:", error);
+  }
+});
+
+// Mostrar carrito
+const mostrarCarrito = () => {
+  const modalBody = document.querySelector(".modal .modal-body");
+  if (modalBody) {
+    modalBody.innerHTML = carrito.map(({ productoId, nombre, precio, cantidad, imagen }) => `
+      <div class="modal-contenedor">
+        <div>
+          <img class="img-fluid img-carrito" src="${imagen}" />
+        </div>
+        <div>
+          <p>Producto: ${nombre}</p>
+          <p>Precio: $${precio.toFixed(2)}</p>
+          <p>Cantidad: ${cantidad}</p>
+          <button class="btn btn-danger" onclick="eliminarProducto(${productoId})">Eliminar producto</button>
+        </div>
+      </div>`).join("");
+
+    if (carrito.length === 0) {
+      modalBody.innerHTML = `<p class="text-center text-secondary">¡Aún no has agregado productos!</p>`;
+    }
+  }
+  carritoContenedor.textContent = carrito.length;
+  if (precioTotal) {
+    precioTotal.innerText = carrito.reduce((acc, prod) => acc + prod.cantidad * prod.precio, 0).toFixed(2);
+  }
+};
+
+// Guardar en LocalStorage
+function guardarStorage() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-
+// Botón Vaciar Carrito
 if (vaciarCarrito) {
-  vaciarCarrito.addEventListener("click", () => {
-    carrito.length = [];
-    mostrarCarrito();
+  vaciarCarrito.addEventListener("click", async () => {
+    try {
+      await fetch(`${API_URL_Carrito}?ClienteId=${clienteId}`, { method: "DELETE" });
+      carrito = [];
+      mostrarCarrito();
+      Swal.fire("Carrito vaciado", "Todos los productos fueron eliminados.", "success");
+    } catch (error) {
+      console.error("Error al vaciar carrito:", error);
+    }
   });
 }
 
+async function agregarProducto(id) {
+  try {
+    // Verificar si el producto ya existe en el carrito
+    const existe = carrito.some(prod => prod.productoId === id);
+
+    if (existe) {
+      // Incrementar cantidad localmente
+      carrito = carrito.map(prod => {
+        if (prod.productoId === id) prod.cantidad += 1;
+        return prod;
+      });
+    } else {
+      // Obtener detalles del producto del backend
+      const res = await fetch(`${API_URL_Productos}/${id}`);
+      const item = await res.json();
+      carrito.push({ ...item, cantidad: 1 });
+    }
+
+    // Actualizar carrito en el backend
+    await fetch(API_URL_Carrito, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ClienteId: clienteId, ProductoId: id, Cantidad: 1 }),
+    });
+
+    mostrarCarrito();
+    Swal.fire("¡Producto agregado!", "El producto fue agregado al carrito.", "success");
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    Swal.fire("Error", "No se pudo agregar el producto al carrito.", "error");
+  }
+}
+
+// Eliminar producto del carrito
+async function eliminarProducto(id) {
+  try {
+    carrito = carrito.filter(item => item.productoId !== id);
+    await fetch(`${API_URL_Carrito}?ClienteId=${clienteId}&ProductoId=${id}`, { method: "DELETE" });
+    mostrarCarrito();
+    Swal.fire("Producto eliminado", "El producto fue eliminado del carrito.", "success");
+  } catch (error) {
+    console.error("Error al eliminar producto:", error);
+  }
+}
+
+// Botón Finalizar Compra
 if (procesarCompra) {
   procesarCompra.addEventListener("click", () => {
     if (carrito.length === 0) {
-      Swal.fire({
-        title: "¡Tu carrito está vacio!",
-        text: "Compra algo para continuar con la compra",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+      Swal.fire("Carrito vacío", "Agrega productos al carrito antes de finalizar la compra.", "error");
     } else {
-      location.href = "compra.html";
+      registrarVenta();
     }
   });
 }
 
-const mayor = document.getElementById('mayor');
-const menor = document.getElementById('menor');
+function continuarCompra() {
+  // Guardar el carrito actual en localStorage
+  localStorage.setItem("carrito", JSON.stringify(carrito));
 
-document.getElementById('mayor').addEventListener("click", reloadMayor);
-document.getElementById('menor').addEventListener("click", reloadMenor);
-
-async function reloadMayor(){
-    contenedor.innerHTML = ("");
-
-    const res = await fetch(API_URL_ProductosMayor);
-    const data = await res.json();
-    
-    Object.values(data).forEach((prod) => {
-        const { productoId, nombre, precio, descripcion, imagen } = prod;
-        if (contenedor) {
-          contenedor.innerHTML += `
-          <div class="col-12 col-md-4 mb-4">
-          <div class="card h-100" width="412px" height="450px">
-          <img class="card-img-top mt-2" src="${imagen}" height="450" alt="Card image">
-          <div class="card-body">
-            <h5 class="card-title text-center mb-0">${nombre}</h5>
-            <p class="card-text text-center mb-0">Precio: $${precio}</p>
-            <p class="card-text text-center mb-0">Descripcion: ${descripcion}</p>                      
-          </div>
-          <div class="buttonVer text-center mb-0">    
-            <a href="producto.html" class="btn btn-secondary" onclick="verProducto(${productoId}, ${imagen}, ${nombre}, $${precio}, ${descripcion})"><i class="bi bi-eye mx-5"> Ver</i></a> 
-          </div> 
-          </br>
-          <div class="buttonCompra text-center mb-0">     
-            <button class="btn btn-secondary" onclick="agregarProducto(${productoId})"><i class="bi bi-cart mx-5"> Comprar</i></button>
-          </div>
-          </br>
-        </div>
-          `;
-        }
-      });
+  // Redirigir a compra.html
+  location.href = "compra.html";
 }
 
-async function reloadMenor(){
-    contenedor.innerHTML = ("");
-
-    const res = await fetch(API_URL_ProductosMenor);
-    const data = await res.json();
-    
-    Object.values(data).forEach((prod) => {
-        const { productoId, nombre, precio, descripcion, imagen } = prod;
-        if (contenedor) {
-          contenedor.innerHTML += `
-          <div class="col-12 col-md-4 mb-4">
-          <div class="card h-100" width="390px" height="450px">
-          <img class="card-img-top mt-2" src="${imagen}" height="450" alt="Card image">
-          <div class="card-body">
-            <h5 class="card-title text-center mb-0">${nombre}</h5>
-            <p class="card-text text-center mb-0">Precio: $${precio}</p>
-            <p class="card-text text-center mb-0">Descripcion: ${descripcion}</p>                      
-          </div>
-          <div class="buttonVer text-center mb-0">    
-            <a href="producto.html" class="btn btn-secondary" onclick="verProducto(${productoId}, ${imagen}, ${nombre}, $${precio}, ${descripcion})"><i class="bi bi-eye mx-5"> Ver</i></a> 
-          </div> 
-          </br>
-          <div class="buttonCompra text-center mb-0">     
-            <button class="btn btn-secondary" onclick="agregarProducto(${productoId})"><i class="bi bi-cart mx-5"> Comprar</i></button>
-          </div>
-          </br>
-        </div>
-          `;
-        }
-      });
-}
-
-reloadMenor();
-
-
-async function agregarProducto(id) {
-
-  const carro = await fetch(API_URL_Carrito)
-  const res = await fetch(API_URL_Productos);
-  const data = await res.json();
-  const existe = carrito.some(prod => prod.productoId === id)
-  const cantidad = 1
-  if(existe){
-    const prod = carrito.map(prod => {
-      if(prod.productoId === id){
-        cantidad = 1
-      }
-      else {
-        cantidad = 1
-      }
-    })
-  } else {
-    const item = data.find((prod) => prod.productoId === id)
-
-      let jsonBody = {
-      clienteId: userId,
-      productoId: id,
-      cantidad: cantidad
-     
-   }
-  let body = JSON.stringify(jsonBody)
-
-  fetch(`${carro}`,{
-    method : 'PUT',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-    },
-    body: body
-})
-.then(body => {
-    console.log(body)
-})
-    carrito.push(item) 
-
-    if (carrito.length != 0) {
-      Swal.fire({
-        title: "¡Producto agregado al carrito!",
-        text: "Tu producto fue agregado con exito al carrito de compras",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-    } else {
-      location.href = "compra.html";
-    }
-
-  }
-      
-  mostrarCarrito()
-};
-  
-  const mostrarCarrito = () => {
-    const modalBody = document.querySelector(".modal .modal-body");
-    if (modalBody) {
-      modalBody.innerHTML = "";
-      carrito.forEach((prod) => {
-        const { productoId, nombre, precio, descripcion, imagen, cantidad } = prod;
-        console.log(modalBody);
-        modalBody.innerHTML += `
-        <div class="modal-contenedor">
-          <div>
-          <img class="img-fluid img-carrito" src="${imagen}"/>
-          </div>
-          <div>
-          <p>Producto: ${nombre}</p>
-        <p>Precio: ${precio}</p>
-        <p>Cantidad :${cantidad}</p>
-        <button class="btn btn-danger"  onclick="eliminarProducto(${productoId})">Eliminar producto</button>
-          </div>
-        </div>   
-        `;
-      });
-    }
-  
-    if (carrito.length === 0) {
-      console.log("Nada");
-      modalBody.innerHTML = `
-      <p class="text-center text-secondary parrafo">¡Aun no agregaste nada!</p>
-      `;
-    } else {
-      console.log("Algo");
-    }
-    carritoContenedor.textContent = carrito.length;
-  
-    if (precioTotal) {
-      precioTotal.innerText = carrito.reduce(
-        (acc, prod) => acc + prod.cantidad * prod.precio,
-        0
-      );
-    }
-  
-    guardarStorage();
-  };
-  //GUARDAMOS EL CARRITO EN LOCALSTORAGE
-  function guardarStorage() {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }
-  
-  function eliminarProducto(id) {
-    const productoId = id;
-    carrito = carrito.filter((item) => item.productoId !== productoId);
-    mostrarCarrito();
-  }
-
-  async function procesarPedido() {
-    carrito.forEach((prod) => {
-      const listaCompra = document.querySelector("#lista-compra tbody");
-      const { productoId, nombre, precio, imagen, cantidad } = prod;
-      if (listaCompra) {
-        const row = document.createElement("tr");
-        row.innerHTML += `
-                <td>
-                <img class="img-fluid img-carrito" src="${imagen}"/>
-                </td>
-                <td>${nombre}</td>
-              <td>${precio}</td>
-              <td>${cantidad}</td>
-              <td>${precio * cantidad}</td>
-              `;
-        listaCompra.appendChild(row);
-      }
+// Registrar venta
+async function registrarVenta() {
+  try {
+    const res = await fetch(`${API_URL_RegistrarVenta}?ClienteId=${clienteId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     });
-    totalProceso.innerText = carrito.reduce(
-      (acc, prod) => acc + prod.cantidad * prod.precio,
-      0
-    );
+
+    if (res.ok) {
+      Swal.fire("¡Venta registrada!", "La venta fue registrada exitosamente.", "success")
+        .then(() => {
+          localStorage.removeItem("carrito");
+          location.href = "compra.html"; // Redirigir a compra.html
+        });
+    } else {
+      const error = await res.json();
+      Swal.fire("Error al registrar venta", error.descripcion || "Ocurrió un error inesperado.", "error");
+    }
+  } catch (error) {
+    console.error("Error al registrar venta:", error);
+    Swal.fire("Error", "No se pudo registrar la venta. Inténtalo más tarde.", "error");
   }
-  
-   function enviarCompra(e){
-     e.preventDefault()
-     const cliente = document.querySelector('#cliente').value
-     const email = document.querySelector('#correo').value
-  
-     if(email === '' || cliente == ''){
-       Swal.fire({
-         title: "¡Debes completar tu email y nombre!",
-         text: "Rellena el formulario",
-         icon: "error",
-         confirmButtonText: "Aceptar",
-     })
-   } else {
-  
-    const btn = document.getElementById('button');
- 
-     btn.value = 'Enviando...';
-  
-     const serviceID = 'default_service';
-     const templateID = 'template_qxwi0jn';
-  
-     emailjs.sendForm(serviceID, templateID, this)
-      .then(() => {
-        btn.value = 'Finalizar compra';
-      }, (err) => {
-        btn.value = 'Finalizar compra';
-      });
-      
-     const spinner = document.querySelector('#spinner')
-     spinner.classList.add('d-flex')
-     spinner.classList.remove('d-none')
-  
-     setTimeout(() => {
-       spinner.classList.remove('d-flex')
-       spinner.classList.add('d-none')
-       formulario.reset()
-  
-       const alertExito = document.createElement('p')
-       alertExito.classList.add('alert', 'alerta', 'd-block', 'text-center', 'col-12', 'mt-2', 'alert-success')
-       alertExito.textContent = 'Compra realizada correctamente'
-       formulario.appendChild(alertExito)
-       
-       setTimeout(() => {
-         alertExito.remove()
-         document.location.reload()
-       }, 3000)
-  
-  
-     }, 3000)
-   }
-   localStorage.clear()
-  
-   }
+}
+
+// Ver producto (abre un modal con detalles)
+function verProducto(nombre, imagen, descripcion, precio) {
+  Swal.fire({
+    title: nombre,
+    html: `
+      <img src="${imagen}" class="img-fluid mb-3" alt="Producto">
+      <p>${descripcion}</p>
+      <h4>Precio: $${precio.toFixed(2)}</h4>
+    `,
+    confirmButtonText: "Cerrar",
+  });
+}
+
+// Cargar productos iniciales
+document.addEventListener("DOMContentLoaded", () => reloadProductos(API_URL_ProductosMenor));
+
+const mayorButton = document.getElementById("mayor");
+const menorButton = document.getElementById("menor");
+
+async function reloadMayor() {
+  try {
+    const res = await fetch(API_URL_ProductosMayor);
+    const productos = await res.json();
+    renderProductos(productos);
+  } catch (error) {
+    console.error("Error al cargar productos por precio mayor:", error);
+  }
+}
+
+async function reloadMenor() {
+  try {
+    const res = await fetch(API_URL_ProductosMenor);
+    const productos = await res.json();
+    renderProductos(productos);
+  } catch (error) {
+    console.error("Error al cargar productos por precio menor:", error);
+  }
+}
+
+// Renderizar los productos en el contenedor
+function renderProductos(productos) {
+  if (productos.length === 0) {
+    contenedor.innerHTML = "<p class='text-center'>No hay productos disponibles</p>";
+    return;
+  }
+
+  contenedor.innerHTML = productos
+    .map(
+      ({ productoId, nombre, precio, descripcion, imagen }) => `
+      <div class="col-12 col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="${imagen}" class="card-img-top" alt="${nombre}">
+          <div class="card-body">
+            <h5 class="card-title text-center">${nombre}</h5>
+            <p class="card-text text-center">Precio: $${precio.toFixed(2)}</p>
+            <p class="card-text text-center">${descripcion}</p>
+           <div class="text-center mb-2">
+              <button class="btn btn-secondary" onclick="verProducto('${nombre}', '${imagen}', '${descripcion}', ${precio})">
+                <i class="bi bi-eye"></i> Ver Producto
+              </button>
+              <button class="btn btn-primary" onclick="agregarProducto(${productoId})">
+                <i class="bi bi-cart"></i> Comprar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>`
+    )
+    .join("");
+}
+
+// Eventos de clic en los botones
+document.addEventListener("DOMContentLoaded", () => {
+  if (mayorButton) {
+    mayorButton.addEventListener("click", reloadMayor);
+  }
+  if (menorButton) {
+    menorButton.addEventListener("click", reloadMenor);
+  }
+});
 
 

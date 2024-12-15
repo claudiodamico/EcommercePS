@@ -255,6 +255,34 @@
 </section>
 <!-- FIN LO NUEVO -->
 
+    <!-- Modal para ver detalles del producto -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalLabel">Detalles del producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <img id="modalProductImage" class="img-fluid" alt="Imagen del producto" />
+            </div>
+            <div class="col-md-6">
+              <h4 id="modalProductName"></h4>
+              <p id="modalProductDescription"></p>
+              <h5>Precio: $<span id="modalProductPrice"></span></h5>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="addToCartButton">Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>  
+
     <footer class="bg-dark text-center text-white"> 
       <!-- Copyright -->
       <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">

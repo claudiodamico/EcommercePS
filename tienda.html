@@ -55,11 +55,10 @@
       </nav>
     </header>
     <main>
-      <button type="button" id="mayor" class="btn btn-secondary">Precio mayor</button>
-      <button type="button" id="menor" class="btn btn-secondary">Precio menor</button>
+      <button id="mayor" class="btn btn-secondary">Precio Mayor</button>
+      <button id="menor" class="btn btn-secondary">Precio Menor</button>
       <div class="row mt-5" id="contenedor"></div>
-    </main>
-    
+    </main>  
 
     <div class="container-xl">
       <div class="modal" tabindex="-1" role="dialog" id="modal">
@@ -81,9 +80,9 @@
               <button type="button" class="btn btn-danger" id="vaciarCarrito">
                 Vaciar carrito
               </button>
-              <button type="button" id="procesarCompra" class="btn btn-primary">
-                Continuar compra
+              <button class="btn btn-primary" onclick="continuarCompra()">Continuar compra               
               </button>
+
               <button
                 type="button"
                 class="btn btn-secondary"
